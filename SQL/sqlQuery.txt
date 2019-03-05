@@ -1,0 +1,6 @@
+create table UserInfo(uname varchar(20),fullname varchar(20),male varchar(10),age number,gmail varchar(20),constraint UserInfo_uname_pk primary key(uname));
+create table UserCredentials(uname varchar(20),password varchar(20),constraint UserCredentials_uname_pk primary key(uname),constraint UserCredentials_uname_fk foreign key(uname) references UserInfo(uname));
+create table Friendlist(fromId varchar(20),toId varchar(20),status varchar(20),constraint Friendlist_fromidtoid_pk primary key(fromId,toId),constraint Friendlist_fromId_fk foreign key(fromId) references UserInfo(uname),constraint Friendlist_toId_fk foreign key(toId) references UserInfo(uname));
+create table Inbox(fromid varchar(20),toid varchar(20),message varchar(2000),lastseen varchar(35));
+create table status(uname varchar(20),lastseen varchar(20),constraint status_uname_pk primary key(uname),constraint status_uname_fk foreign key(uname) references UserInfo(uname));
+
