@@ -37,16 +37,29 @@ p.thicker {
 }
 .accept
 {
-
 padding: 0;
-border: none;
 background: none;
+font-size: 15px;
+border:none
 }
 .div1
 {
 width: 500px;
 height: 200px;
 border: 1px blue;
+}
+div.notification
+{
+font-style: italic;
+color: red;
+font-size: 25px;
+}
+h4.notification
+{
+font-style: italic;
+color: darkblue;
+font-size: 20px;
+}
 }
 </style>
 <script>
@@ -98,6 +111,33 @@ function acceptRequest(object)
 	xmlhttp.open("POST",urls,true);
 	xmlhttp.send();
 }
+function rejectRequest(object)
+{
+	var xmlhttp;
+	var urls="WithdrawRequest?&toId="+object.value;
+	if (window.XMLHttpRequest)
+	  {
+	  xmlhttp=new XMLHttpRequest();
+	  }
+	else
+	  {
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  xmlhttp.onreadystatechange=function()
+	  {
+	  if (xmlhttp.readyState==4)
+	  {
+			 
+	        
+	  }
+	  }
+	xmlhttp.open("GET",urls,true);
+	xmlhttp.send();
+}
+function changeColour(object)
+{
+	object.style.color="green";
+}
 </script>
 </head>
 
@@ -110,15 +150,15 @@ function acceptRequest(object)
 </div>
 <br>
 <div style="padding-left:16px">
-<font size="4" color="black">
+<font size="5" color="darkblue">
 Hai  ${uname } !!!
 </font>
 </div>
 <br>
-<h4 align="center" style="color :darkblue;">Notification</h4>
+<h4 align="center" class="notification">Notification</h4>
 <br>
 <div align="center" >
-<div style="color :red;" id="notification" class="div1">
+<div class="notification" id="notification" class="div1">
 </div>
 </div>
 </body>

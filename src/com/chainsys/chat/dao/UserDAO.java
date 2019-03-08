@@ -105,12 +105,12 @@ public class UserDAO {
 		
 		
 		
-		url="select uname,fullname from UserInfo where uname!=? and uname not in(select toId from FriendList where fromId=?) and uname not in(select fromId from FriendList where toId=? and status=?)";
+		url="select uname,fullname from UserInfo where uname!=? and uname not in(select toId from FriendList where fromId=?) and uname not in(select fromId from FriendList where toId=?)";
 	    prepareStatement=connection.prepareStatement(url);
 		prepareStatement.setString(1,uname);
 		prepareStatement.setString(2,uname);
 		prepareStatement.setString(3,uname);
-		prepareStatement.setString(4,"accepted");
+		//prepareStatement.setString(4,"accepted");
 	    result=prepareStatement.executeQuery();
 	    while(result.next())
 	    {
@@ -125,7 +125,7 @@ public class UserDAO {
 	    connection.close();
 	    return list;
 	}
-	public String sendRequest(String fromId,String toId) throws SQLException
+	public void sendRequest(String fromId,String toId) throws SQLException
 	{
 		Connection connection=ConnectionUtil.getConnection();	
 		String url="insert into FriendList values(?,?,?)"; 
@@ -135,7 +135,19 @@ public class UserDAO {
         prepareStatement.setString(3,"Request");
         prepareStatement.execute();
         connection.close();
-        return "Requested";
+       
+	     
+	}
+	public void withdrawRequest(String fromId,String toId) throws SQLException
+	{
+		Connection connection=ConnectionUtil.getConnection();	
+		String url="delete from FriendList where fromId=? and toId=?"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setString(1,fromId);
+        prepareStatement.setString(2,toId);
+        prepareStatement.execute();
+        connection.close();
+        
 	     
 	}
 	public ArrayList<User> getRequest(String uname) throws SQLException

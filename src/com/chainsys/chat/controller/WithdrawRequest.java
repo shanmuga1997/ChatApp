@@ -3,9 +3,7 @@ package com.chainsys.chat.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,19 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.chainsys.chat.dao.UserDAO;
-import com.chainsys.chat.model.User;
 
 /**
- * Servlet implementation class DisplayRequest
+ * Servlet implementation class WithdrawRequest
  */
-@WebServlet("/DisplayRequest")
-public class DisplayRequest extends HttpServlet {
+@WebServlet("/WithdrawRequest")
+public class WithdrawRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DisplayRequest() {
+    public WithdrawRequest() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,7 +33,18 @@ public class DisplayRequest extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		PrintWriter out=response.getWriter();
+		HttpSession session=request.getSession(false);  
+        String uname=(String)session.getAttribute("uname"); 
+        String toId=request.getParameter("toId");
+        UserDAO obj=new UserDAO();
+        try {
+        	
+			obj.withdrawRequest(toId,uname);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -46,28 +54,17 @@ public class DisplayRequest extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out=response.getWriter();
 		HttpSession session=request.getSession(false);  
-	    String uname=(String)session.getAttribute("uname"); 
+        String uname=(String)session.getAttribute("uname"); 
+        String toId=request.getParameter("toId");
         UserDAO obj=new UserDAO();
         try {
-        	ArrayList<User> list=obj.getRequest(uname);
-			request.setAttribute("list",list);
-			String result="";
-		    for(User user:list)
-		    {
-		    	result=user.getUname()+" has send you a friend request!!!" +"<br>"+"<button type='button' onmouseover='changeColour(this)' class='accept' value="+user.getUname()+" onclick='acceptRequest(this)'>"+"Accept"+"</button>          "+"<button type='button' onmouseover='changeColour(this)' class='accept' value="+user.getUname()+" onclick='rejectRequest(this)'>"+"Reject"+"</button>"+"<br><br>"+result;	
-		    	
-		    }
-		    if(list.isEmpty())
-		    {
-		    	result="You have no new notifications!!";
-		    }
-		    out.println(result);
+        	
+			obj.withdrawRequest(uname,toId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
-      
 	}
 
 }

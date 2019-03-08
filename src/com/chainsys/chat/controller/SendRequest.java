@@ -47,9 +47,8 @@ public class SendRequest extends HttpServlet {
         String toId=request.getParameter("toId");
         UserDAO obj=new UserDAO();
         try {
-        	System.out.println(toId);
         	
-			out.println(obj.sendRequest(uname,toId));
+			obj.sendRequest(uname,toId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
