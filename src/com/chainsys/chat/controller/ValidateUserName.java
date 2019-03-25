@@ -9,22 +9,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.chainsys.chat.dao.MessageDAO;
 import com.chainsys.chat.dao.UserDAO;
+import com.chainsys.chat.model.User;
 
 /**
- * Servlet implementation class AcceptRequest
+ * Servlet implementation class ValidateUserName
  */
-@WebServlet("/AcceptRequest")
-public class AcceptRequest extends HttpServlet {
+@WebServlet("/ValidateUserName")
+public class ValidateUserName extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AcceptRequest() {
+    public ValidateUserName() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,20 +41,23 @@ public class AcceptRequest extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-                
-		PrintWriter out=response.getWriter();
-		HttpSession session=request.getSession(false);  
-		
-	    String uname=(String)session.getAttribute("uname"); 
-		String toId=request.getParameter("toId");
+		User user=new User();
+		user.setUname(request.getParameter("uname"));
 		UserDAO obj=new UserDAO();
+		PrintWriter out=response.getWriter();
 		try {
-			obj.acceptRequest(uname,toId);
-			
+			if(obj.checkUsername(user))
+			{
+				out.println("Username already exists!!Try another name");
+			}
+			else
+			{
+				out.println(" ");
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	}
 
+}

@@ -3,6 +3,7 @@ package com.chainsys.chat.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -40,7 +41,7 @@ public class SearchUser extends HttpServlet {
 	        String uname=(String)session.getAttribute("uname"); 
 	        UserDAO obj=new UserDAO();
 	        try {
-				ArrayList<User> list=obj.DisplayUser(uname);
+				List<User> list=obj.DisplayUser(uname);
 				request.setAttribute("list",list);
 			    RequestDispatcher rd=request.getRequestDispatcher("DisplayUser.jsp");
 				rd.forward(request,response);		

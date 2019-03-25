@@ -48,7 +48,7 @@ public class UserSignup extends HttpServlet {
 		user.setFullname(request.getParameter("fullname"));
 		user.setGender(request.getParameter("gender"));
 		user.setAge(5);
-		user.setGmail(	request.getParameter("gmail"));
+		user.setGmail(	request.getParameter("email"));
 		user.setPassword(request.getParameter("password"));
 		UserDAO obj=new UserDAO();
 		try {
@@ -60,8 +60,8 @@ public class UserSignup extends HttpServlet {
 			}
 			else
 			{
-				out.println("Already exists!!!");
-			
+				RequestDispatcher rd=request.getRequestDispatcher("SignupFailure.jsp");
+				rd.forward(request,response);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

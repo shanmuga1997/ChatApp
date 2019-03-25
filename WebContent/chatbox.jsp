@@ -190,10 +190,10 @@ function Inactive()
 </div>
 <div id="auto">
 </div>
-<textarea rows="4" id="message" cols="50" onfocusin="active()" onfocusout="Inactive()">
+<textarea rows="4" id="message" cols="50" onfocusin="active()" onfocusout="Inactive()" required>
 </textarea>
 <br>
-<input type="button" value="send" onClick='updateMessage()'>
+<input type="button" value="send" onClick='updateMessage()' >
 
 
 

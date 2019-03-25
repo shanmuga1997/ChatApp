@@ -62,8 +62,10 @@ public class UserLogin extends HttpServlet {
 			  }
 			  else
 			  {
-				  PrintWriter out=response.getWriter();
-				  out.println("Failure!!");
+				 RequestDispatcher rd=request.getRequestDispatcher("Home.jsp");
+				 request.setAttribute("error","Invalid username or password!!!");
+				 request.setAttribute("button","&times");
+				 rd.forward(request,response);
 				  
 			  }
 		} catch (SQLException e) {

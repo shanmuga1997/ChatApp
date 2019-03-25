@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -44,17 +45,18 @@ public class DisplayRequest extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
 		PrintWriter out=response.getWriter();
 		HttpSession session=request.getSession(false);  
 	    String uname=(String)session.getAttribute("uname"); 
         UserDAO obj=new UserDAO();
         try {
-        	ArrayList<User> list=obj.getRequest(uname);
+        	List<User> list=obj.getRequest(uname);
 			request.setAttribute("list",list);
 			String result="";
 		    for(User user:list)
 		    {
-		    	result=user.getUname()+" has send you a friend request!!!" +"<br>"+"<button type='button' onmouseover='changeColour(this)' class='accept' value="+user.getUname()+" onclick='acceptRequest(this)'>"+"Accept"+"</button>          "+"<button type='button' onmouseover='changeColour(this)' class='accept' value="+user.getUname()+" onclick='rejectRequest(this)'>"+"Reject"+"</button>"+"<br><br>"+result;	
+		    	result=user.getUname()+" has send you a friend request!!!" +"<br>"+"<button type='button' onmouseover='changeColour(this)' onmouseout='changeColour(this)' class='accept' value="+user.getUname()+" onclick='acceptRequest(this)'>"+"Accept"+"</button>          "+"<button type='button' onmouseover='changeColour(this)' class='accept' value="+user.getUname()+" onclick='rejectRequest(this)'>"+"Reject"+"</button>"+"<br><br>"+result;	
 		    	
 		    }
 		    if(list.isEmpty())

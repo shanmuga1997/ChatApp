@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 import javax.servlet.RequestDispatcher;
@@ -42,7 +43,7 @@ public class DisplayFriends extends HttpServlet {
 	    String uname=(String)session.getAttribute("uname"); 
         UserDAO obj=new UserDAO();
         try {
-			ArrayList<User> list=obj.displayFriends(uname);
+			List<User> list=obj.displayFriends(uname);
 			 request.setAttribute("list",list);
 			 RequestDispatcher rd=request.getRequestDispatcher("DisplayFriends.jsp");
 			 rd.forward(request,response);

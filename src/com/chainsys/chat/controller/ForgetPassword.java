@@ -2,29 +2,29 @@ package com.chainsys.chat.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.chainsys.chat.dao.MessageDAO;
+import org.apache.commons.mail.EmailException;
+
 import com.chainsys.chat.dao.UserDAO;
 
 /**
- * Servlet implementation class AcceptRequest
+ * Servlet implementation class ForgetPassword
  */
-@WebServlet("/AcceptRequest")
-public class AcceptRequest extends HttpServlet {
+@WebServlet("/ForgetPassword")
+public class ForgetPassword extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AcceptRequest() {
+    public ForgetPassword() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,20 +42,34 @@ public class AcceptRequest extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-                
-		PrintWriter out=response.getWriter();
-		HttpSession session=request.getSession(false);  
-		
-	    String uname=(String)session.getAttribute("uname"); 
-		String toId=request.getParameter("toId");
-		UserDAO obj=new UserDAO();
-		try {
-			obj.acceptRequest(uname,toId);
+	       String uname=request.getParameter("uname");
+	       UserDAO obj=new UserDAO();
+	     
+	       try {
+	    	   RequestDispatcher rd;
+	    	   String email=obj.getEmail(uname);
+	    	   if(email.length()==0 || email.isEmpty())
+	    	   {
+	    		  request.setAttribute("UnameError","Invalid username!!!");
+	    		  rd=request.getRequestDispatcher("ForgetPassword.jsp");
+	    		  rd.forward(request,response);
+	    	   }
+	    	   else
+	    	   {
+	    		  String otp=obj.sendOTP(email);
+	   		      request.setAttribute("validotp", otp);
+	   		      request.setAttribute("unameOTP",uname);
+	    		  rd=request.getRequestDispatcher("OTP.jsp");
+	    		  rd.forward(request,response);
+	   		      
+	    	   }
+	    	  
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	       
 	}
 
+}

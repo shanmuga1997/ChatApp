@@ -1,53 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.topnav {
-  overflow: hidden;
-  background-color:#00005A;
-}
-
-.topnav a {
-  float: left;
-  color:#f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover {
-background-image: url("5.jpg");
-  color:black;
-}
-
-.topnav a.active {
- background-image: url("5.jpg");
-   background-color: #ddd;
-  color:black;
-}
-
-.modal {
-    position:fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -9em; /*set to a negative number 1/2 of your height*/
-    margin-left: -15em;
-	
-    height:250px;
-    width:35%;
-   
-}
-p.thicker {
-  font-weight: 900;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="css/Home.css">
 </head>
 <body  background="5.jpg">
 
@@ -58,37 +12,36 @@ p.thicker {
   <a href="#about">About</a>
 </div>
 
-<div style="padding-left:16px">
-  
-</div>
-
 <div align="center">
-<div class="modal" >
-<font size="4" color="black">
+<div class="modal">
+
+<ul>
+  <li>${error }<span class="close">${button }</span></li>
+</ul>
+
+<script>
+var closebtns = document.getElementsByClassName("close");
+closebtns[0].addEventListener("click", function() {
+    this.parentElement.style.display = 'none';
+   
+  });
+</script>
+
 <form method="post" action="UserLogin">
 <h3>Login</h3>
-<table>
-<tr>
-<th>
-User name
-</th>
-<td>
-<input type="text" name="uname" required><br><br>
-</td>
-</tr>
-<tr>
-<th>
-Password 
-</th>
-<td>
-<input type="password" name="password" required>
-</td>
-</tr>
-</table>
-<br><br>
-<input type="submit" value="Signin">
+
+
+<label for="uname">User Name</label>
+<input type="text" autocomplete="off" id="uname" name="uname" placeholder="Your user name.." required>
+<span></span><br><br>
+
+<label for="password">Password</label>
+<input type="password" autocomplete="off" id="password" name="password" placeholder="Your password.." required>
+<span></span><br><br>
+
+<input type="submit" value="Signin"><br><br>
+<a class="forgetpassword" href="ForgetPassword.jsp">Forget Password?</a>
 </form>
-</font>
 </div>
 </div>
 

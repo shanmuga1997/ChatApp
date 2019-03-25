@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,62 +48,75 @@ p.thicker {
   font-weight: 900;
 }
 </style>
-<script>
-function sendRequest(object)
-{
-    var toId=object.value;
-	var xmlhttp;
-	var urls="SendRequest?&toId="+toId;
-	if (window.XMLHttpRequest)
-	  {
-	  xmlhttp=new XMLHttpRequest();
-	  }
-	else
-	  {
-	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  xmlhttp.onreadystatechange=function()
-	  {
-	  if (xmlhttp.readyState==4)
-	  {
-			object.innerText=xmlhttp.responseText;     
-	  }
-	  }
-	xmlhttp.open("POST",urls,true);
-	xmlhttp.send();
-}
-
-</script>
-
 </head>
-
 <body  background="5.jpg">
+
 <div class="topnav">
-  <a href="welcome.jsp">Home</a>
-  <a href="SearchUser">Search</a>
-  <a class="active" href="DisplayFriends">Chat</a>
-  <a href="Logout">Logout</a>
+   <a  href="Home.jsp">Signin</a>
+   <a class="active" href="signup.jsp">Signup</a>
+  <a href="#contact">Contact</a>
+  <a href="#about">About</a>
 </div>
 
-<br><br><br>
 <div style="padding-left:16px">
+  
+</div>
+
+<div align="center">
+<div class="modal" >
 <font size="4" color="black">
-<form method="post" action="Display">
+<form method="post" action="UserSignup">
+<h2>User Name already exists!!!</h3>
+<h3>SignUp</h3>
 <table>
-<c:forEach var="list" items="${list}">
-	<tr align="center">
-		<td>${list.uname}</td>
-		<td><button type="submit"  value=${list.uname } name="toId">chat</button></td>
-	</tr>
-</c:forEach>
+<tr>
+<th>
+User name
+</th>
+<td>
+<input type="text" name="uname" required><br><br>
+</td>
+</tr>
+<tr>
+<th>
+Full name
+</th>
+<td>
+<input type="text" name="fullname" required><br><br>
+</td>
+</tr>
+<tr>
+<th>
+gmail
+</th>
+<td>
+<input type="email" name="gmail" required><br>
+</td>
+</tr>
+<tr>
+<th>
+Gender
+</th>
+<td>
+<input type="radio" name="gender" value="male" required>Male<br><br>
+<input type="radio" name="gender" value="female" required>Female<br><br>
+</td>
+</tr>
+<tr>
+<th>
+Password 
+</th>
+<td>
+<input type="password" name="password" required>
+</td>
+</tr>
 </table>
+<br><br>
+<input type="submit" value="Sigup">
 </form>
 </font>
 </div>
-<div align="center">
-<div class="modal" >
+</div>
 
-</div>
-</div>
 </body>
 </html>

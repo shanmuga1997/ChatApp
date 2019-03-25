@@ -64,6 +64,7 @@ font-size: 20px;
 </style>
 <script>
 window.setInterval("DisplayNotification()", 2500);
+
 function DisplayNotification()
 {
 var xmlhttp;
@@ -136,12 +137,21 @@ function rejectRequest(object)
 }
 function changeColour(object)
 {
-	object.style.color="green";
+	if(object.style.color=="green")
+	{
+		object.style.color="black";
+	}
+	else
+	{
+		object.style.color="green";		
+	}
+	
 }
 </script>
 </head>
 
 <body  background="5.jpg">
+
 <div class="topnav">
   <a class="active" href="welcome.jsp">Home</a>
   <a  href="SearchUser">Search</a>
@@ -149,11 +159,12 @@ function changeColour(object)
   <a href="Logout">Logout</a>
 </div>
 <br>
-<div style="padding-left:16px">
-<font size="5" color="darkblue">
-Hai  ${uname } !!!
-</font>
-</div>
+
+
+<p id="aa"><font color="darkblue" size="5">Hai ${uname } !!!</font></p>
+
+
+
 <br>
 <h4 align="center" class="notification">Notification</h4>
 <br>

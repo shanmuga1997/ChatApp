@@ -5,7 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 
 import com.chainsys.chat.model.User;
 
@@ -82,7 +89,7 @@ public class UserDAO {
         connection.close();
 	     
 	}
-	public ArrayList<User> DisplayUser(String uname) throws SQLException
+	public List<User> DisplayUser(String uname) throws SQLException
 	{
 		Connection connection=ConnectionUtil.getConnection();	
 		String url="select uname,fullname from UserInfo where uname in(select toId from FriendList where fromId=? and status=?)";
@@ -125,6 +132,56 @@ public class UserDAO {
 	    connection.close();
 	    return list;
 	}
+	
+	public List<User> findUser(String name,String uname,String fname) throws SQLException
+	{
+		uname=uname+"%";
+		fname=fname+"%";
+		Connection connection=ConnectionUtil.getConnection();	
+		String url="select uname,fullname from UserInfo where uname like ? and fullname like ? and uname in(select toId from FriendList where fromId=? and status=?)";
+		PreparedStatement prepareStatement=connection.prepareStatement(url);
+		prepareStatement.setString(1,uname);
+		prepareStatement.setString(2,fname);
+		prepareStatement.setString(3,name);
+		prepareStatement.setString(4,"Request");
+	    ResultSet result=prepareStatement.executeQuery();
+	    ArrayList<User> list=new ArrayList<User>();
+	    User user;
+	    while(result.next())
+	    {
+	    	user=new User();
+	    	user.setUname(result.getString(1));
+	    	user.setFullname(result.getString(2));
+	    	user.setStatus("Requested");
+	    	list.add(user);
+	    }
+		
+		
+		
+		
+		
+		url="select uname,fullname from UserInfo where uname like ?  and fullname like ? and uname!=? and uname not in(select toId from FriendList where fromId=?) and uname not in(select fromId from FriendList where toId=?)";
+	    prepareStatement=connection.prepareStatement(url);
+	    prepareStatement.setString(1,uname);
+	    prepareStatement.setString(2,fname);
+		prepareStatement.setString(3,name);
+		prepareStatement.setString(4,name);
+		prepareStatement.setString(5,name);
+		//prepareStatement.setString(4,"accepted");
+	    result=prepareStatement.executeQuery();
+	    while(result.next())
+	    {
+	    	user=new User();
+	    	user.setUname(result.getString(1));
+	    	user.setFullname(result.getString(2));
+	    	user.setStatus("Send");
+	    	list.add(user);
+	    	
+	    	
+	    }
+	    connection.close();
+	    return list;
+	}
 	public void sendRequest(String fromId,String toId) throws SQLException
 	{
 		Connection connection=ConnectionUtil.getConnection();	
@@ -150,7 +207,7 @@ public class UserDAO {
         
 	     
 	}
-	public ArrayList<User> getRequest(String uname) throws SQLException
+	public List<User> getRequest(String uname) throws SQLException
 	{
 		Connection connection=ConnectionUtil.getConnection();	
 		String url="select fromId from FriendList where toId=? and status=?";
@@ -181,7 +238,7 @@ public class UserDAO {
         connection.close();
 	     
 	}
-    public  ArrayList<User >displayFriends(String uname) throws SQLException
+    public  List<User >displayFriends(String uname) throws SQLException
     {
     	Connection connection=ConnectionUtil.getConnection();	
 		String url="select fromId,toId from FriendList where (fromId=? or toId=? ) and status=?";
@@ -219,5 +276,66 @@ public class UserDAO {
 	    }
 	    connection.close();
 	    return list;	
+    }
+    public String sendOTP(String to) throws EmailException
+    {
+    	 long randomNumber = ThreadLocalRandom.current().nextInt(1000, 9999);
+    	 Email email = new SimpleEmail();
+	     email.setSmtpPort(587);
+	     email.setAuthenticator(new DefaultAuthenticator("chatbesimple@gmail.com",
+	             "nefzpdsifvajwzzk"));
+	     email.setDebug(false);
+	     email.setHostName("smtp.gmail.com");
+	     email.setFrom("chatbesimple@gmail.com");
+	     email.setSubject("One Time Password for password reset:-)");
+	     email.setMsg("Your OTP is "+String.valueOf(randomNumber));
+	     email.addTo(to);
+	     email.setTLS(true);
+	     email.send();
+	     return String.valueOf(randomNumber);
+    }
+    public String getEmail(String uname) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="select gmail from UserInfo where uname=?";
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+		prepareStatement.setString(1,uname);
+	    ResultSet result=prepareStatement.executeQuery();
+	    String email="";
+	    if(result.next())
+	    {
+	    	email=result.getString("gmail");
+	    }
+	    connection.close();
+	    return email;
+    }
+    public void updatePassword(String uname,String password) throws SQLException
+	{
+		Connection connection=ConnectionUtil.getConnection();	
+		String url="update UserCredentials set password=? where uname=?"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setString(1,password);
+        prepareStatement.setString(2,uname);
+        prepareStatement.execute();
+        connection.close();
+        
+	     
+	}
+    public void sendAlertPasswordChange(String to) throws EmailException
+    {
+    	 long randomNumber = ThreadLocalRandom.current().nextInt(1000, 9999);
+    	 Email email = new SimpleEmail();
+	     email.setSmtpPort(587);
+	     email.setAuthenticator(new DefaultAuthenticator("chatbesimple@gmail.com",
+	             "nefzpdsifvajwzzk"));
+	     email.setDebug(false);
+	     email.setHostName("smtp.gmail.com");
+	     email.setFrom("chatbesimple@gmail.com");
+	     email.setSubject("ALERT:-)");
+	     email.setMsg("Your password is changed Succesfully!!!!!");
+	     email.addTo(to);
+	     email.setTLS(true);
+	     email.send();
+	    
     }
 }
