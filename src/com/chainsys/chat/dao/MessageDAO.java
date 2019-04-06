@@ -140,5 +140,22 @@ public class MessageDAO {
 		o.updateMessage("shanmuga","kavin","hai");
 		//o.updateMessage("shanmuga","kavin","hello");
 	}
+	public Boolean isActive(String uname) throws SQLException
+	{
+		Connection connection=ConnectionUtil.getConnection();	
+		String url="select lastSeen from status where uname=? and lastseen=?";
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setString(1,uname); 
+        prepareStatement.setString(2,"Online");     
+   		ResultSet result=prepareStatement.executeQuery();
+		
+		if(result.next())
+		{
+			connection.close();
+			return true;
+		}
+		connection.close();
+		return false;
+	}
 
 }

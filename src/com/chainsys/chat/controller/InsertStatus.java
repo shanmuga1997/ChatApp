@@ -1,9 +1,9 @@
 package com.chainsys.chat.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,20 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.chainsys.chat.dao.MessageDAO;
 import com.chainsys.chat.dao.UserDAO;
 
 /**
- * Servlet implementation class AcceptRequest
+ * Servlet implementation class InsertStatus
  */
-@WebServlet("/AcceptRequest")
-public class AcceptRequest extends HttpServlet {
+@WebServlet("/InsertStatus")
+public class InsertStatus extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AcceptRequest() {
+    public InsertStatus() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,21 +41,20 @@ public class AcceptRequest extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-                
-		PrintWriter out=response.getWriter();
 		HttpSession session=request.getSession(false);  
-		
 	    String uname=(String)session.getAttribute("uname"); 
-		String toId=request.getParameter("toId");
-		UserDAO obj=new UserDAO();
-		try {
-			obj.acceptRequest(uname,toId);
-			obj.addNotification(uname, toId," has accepted your friend request!!!");
-			
+	    String content=request.getParameter("content");
+	    UserDAO obj=new UserDAO();
+	    try {
+			obj.addStatus(uname, content);
+			 RequestDispatcher rd=request.getRequestDispatcher("Timeline.jsp");
+			 request.setAttribute("msg","Status Uploaded successfully!!!");
+			 request.setAttribute("button","&times");
+			 rd.forward(request,response);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	}
 
+}

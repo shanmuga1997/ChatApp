@@ -1,30 +1,30 @@
 package com.chainsys.chat.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.chainsys.chat.dao.MessageDAO;
 import com.chainsys.chat.dao.UserDAO;
+import com.chainsys.chat.model.User;
 
 /**
- * Servlet implementation class AcceptRequest
+ * Servlet implementation class DeleteNotification
  */
-@WebServlet("/AcceptRequest")
-public class AcceptRequest extends HttpServlet {
+@WebServlet("/DeleteNotification")
+public class DeleteNotification extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AcceptRequest() {
+    public DeleteNotification() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,7 +34,7 @@ public class AcceptRequest extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	
 	}
 
 	/**
@@ -42,21 +42,14 @@ public class AcceptRequest extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-                
-		PrintWriter out=response.getWriter();
-		HttpSession session=request.getSession(false);  
-		
-	    String uname=(String)session.getAttribute("uname"); 
-		String toId=request.getParameter("toId");
-		UserDAO obj=new UserDAO();
-		try {
-			obj.acceptRequest(uname,toId);
-			obj.addNotification(uname, toId," has accepted your friend request!!!");
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		     UserDAO obj=new UserDAO();
+	        try {
+	        	int id=Integer.parseInt(request.getParameter("id"));
+	        	obj.removeNotification(id);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
+}

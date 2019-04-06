@@ -22,9 +22,8 @@
 <script>
 var closebtns = document.getElementsByClassName("close");
 closebtns[0].addEventListener("click", function() {
-    this.parentElement.style.display = 'none';
-   
-  });
+this.parentElement.style.display = 'none';
+});
 </script>
 
 <form method="post" action="UserLogin">

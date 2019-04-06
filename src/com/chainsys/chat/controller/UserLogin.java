@@ -3,6 +3,8 @@ package com.chainsys.chat.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import com.chainsys.chat.dao.MessageDAO;
 import com.chainsys.chat.dao.UserDAO;
+import com.chainsys.chat.model.Timeline;
 import com.chainsys.chat.model.User;
 import com.sun.corba.se.spi.protocol.RequestDispatcherDefault;
 
@@ -57,8 +60,22 @@ public class UserLogin extends HttpServlet {
 			     session.setAttribute("uname",user.getUname());  
 			     obj.setStatus("Online",user.getUname());
 			     obj2.setLastSeenOffline(user.getUname(),"Online");
-			 	 RequestDispatcher rd=request.getRequestDispatcher("welcome.jsp");
-				 rd.forward(request,response);
+			     List<Timeline> list=new ArrayList<Timeline>();
+			     List<Timeline> list2=new ArrayList<Timeline>();
+			    list=obj.displayTimeline(user.getUname());
+			    list2=obj.displayUnlikeposts(user.getUname());
+			    list.addAll(list2);
+			    
+			    
+			     if(list.isEmpty())
+			     {
+			    	 request.setAttribute("noposts","You have no new posts!!!");
+			     }
+			    
+				 request.setAttribute("list", list);
+				 RequestDispatcher rd=request.getRequestDispatcher("welcome.jsp");
+				 rd.forward(request,response);			     
+			   
 			  }
 			  else
 			  {

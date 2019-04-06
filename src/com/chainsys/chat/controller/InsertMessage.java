@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.chainsys.chat.dao.MessageDAO;
+import com.chainsys.chat.dao.UserDAO;
 
 /**
  * Servlet implementation class InsertMessage
@@ -47,6 +48,15 @@ public class InsertMessage extends HttpServlet {
 		String message=request.getParameter("message");
 		MessageDAO obj=new MessageDAO();
 		try {
+			 if(!obj.isActive(toId))
+			 {
+				 UserDAO obj1=new UserDAO();
+				 obj1.addNotification(fromId, toId," messaged you!!");
+			 }
+			
+			
+			
+			
 			obj.updateMessage(fromId, toId, message);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

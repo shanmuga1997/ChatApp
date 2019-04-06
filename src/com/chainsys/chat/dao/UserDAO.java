@@ -1,6 +1,11 @@
 package com.chainsys.chat.dao;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,11 +14,16 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
+import com.chainsys.chat.model.Timeline;
 import com.chainsys.chat.model.User;
 
 public class UserDAO {
@@ -338,4 +348,155 @@ public class UserDAO {
 	     email.send();
 	    
     }
-}
+    public  List<Timeline>displayTimeline(String uname) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="select timeline.id,timeline.uname,timeline.content,timeline.likes from timeline inner join likes on timeline.id=likes.id where likes.uname=? and (timeline.uname in ( select fromId from FriendList where toId=? and status=? ) or timeline.uname in ( select toId from FriendList where fromId=? and status=? ))";
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+	    prepareStatement.setString(1,uname);
+		prepareStatement.setString(2,uname);
+		prepareStatement.setString(3,"accepted");
+		prepareStatement.setString(4,uname);
+		prepareStatement.setString(5,"accepted");
+		ResultSet rs=prepareStatement.executeQuery();
+		ArrayList<Timeline> list=new ArrayList<Timeline>();
+		Timeline timeline;
+		while(rs.next())
+		{
+			timeline=new Timeline();
+			timeline.setId(rs.getInt(1));
+			timeline.setFname(rs.getString(2));
+			timeline.setContent(rs.getString(3));
+			timeline.setLikes(rs.getInt(4));
+			timeline.setFlag("liked");
+			list.add(timeline);
+		}
+		connection.close();
+		return list;
+	    
+    }
+    public  List<Timeline>displayUnlikeposts(String uname) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="select timeline.id,timeline.uname,timeline.content,timeline.likes from timeline where  timeline.id not in (select id from likes where uname=?)and (timeline.uname in ( select fromId from FriendList where toId=? and status=? ) or timeline.uname in ( select toId from FriendList where fromId=? and status=? ))" ;
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+	    prepareStatement.setString(1,uname);
+	    prepareStatement.setString(2,uname);
+		prepareStatement.setString(3,"accepted");
+		prepareStatement.setString(4,uname);
+		prepareStatement.setString(5,"accepted");
+		ResultSet rs=prepareStatement.executeQuery();
+		ArrayList<Timeline> list=new ArrayList<Timeline>();
+		Timeline timeline;
+		while(rs.next())
+		{
+			timeline=new Timeline();
+			timeline.setId(rs.getInt(1));
+			timeline.setFname(rs.getString(2));
+			timeline.setContent(rs.getString(3));
+			timeline.setLikes(rs.getInt(4));
+			timeline.setFlag("like");
+			list.add(timeline);
+		}
+		connection.close();
+		return list;
+	    
+    }
+   
+    public void addStatus(String uname,String content) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="insert into Timeline(id,uname,content,likes)values(timeline_id_seq.nextval,?,?,?)"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setString(1,uname);
+        prepareStatement.setString(2,content);
+        prepareStatement.setInt(3,0);
+        prepareStatement.execute();
+        connection.close();	
+    }
+    
+    public void insertLike(int id,String uname) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="insert into Likes(id,uname)values(?,?)"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setInt(1,id);
+        prepareStatement.setString(2,uname);
+        prepareStatement.execute();
+        connection.close();		
+    }
+    public void updateLike(int id,int value) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="update timeline set likes=likes+? where id=?"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setInt(1,value);
+        prepareStatement.setInt(2,id);
+        prepareStatement.execute();
+        connection.close();		
+    }
+    public void deleteLike(int id,String uname) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="delete from Likes where id=? and uname=?"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setInt(1,id);
+        prepareStatement.setString(2,uname);
+        prepareStatement.execute();
+        connection.close();		
+    }
+    public int displayLikes(int id) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="select likes from Timeline where id=?";
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+		prepareStatement.setInt(1,id);
+	    ResultSet result=prepareStatement.executeQuery();
+	    int likes=0;
+	    if(result.next())
+	    {
+	    	likes=result.getInt("likes");
+	    }
+	    connection.close();
+	    return likes;
+    }
+    public void addNotification(String fromid,String toid,String alert) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="insert into notification values(notification_id_seq.nextval,?,?,?)"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setString(1,fromid);
+        prepareStatement.setString(2,toid);
+        prepareStatement.setString(3,alert);
+        prepareStatement.execute();
+        connection.close();		
+    }
+    public ArrayList<String> getNotification(String uname) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="select id,fromid,alerts from Notification where toid=?";
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+		prepareStatement.setString(1,uname);
+	    ResultSet result=prepareStatement.executeQuery();
+	    ArrayList<String> list=new ArrayList<String>();
+	    String str;
+	    while(result.next())
+	    {
+	    	str=new String();
+	    	str="<span onmouseover='changeNotificationColour(this)' onmouseout='changeNotificationColour(this)' onclick='removeNotification("+result.getInt(1)+")'>"+result.getString(2)+" "+result.getString(3)+"</span>";
+	    	list.add(str);
+	    }
+	    connection.close();
+	    return list;
+    }
+    public void removeNotification(int id) throws SQLException
+    {
+    	Connection connection=ConnectionUtil.getConnection();	
+		String url="delete from Notification where id=?"; 
+	    PreparedStatement prepareStatement=connection.prepareStatement(url);
+        prepareStatement.setInt(1,id);
+        prepareStatement.execute();
+        connection.close();		
+    }
+    
+} 

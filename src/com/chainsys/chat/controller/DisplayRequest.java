@@ -56,10 +56,16 @@ public class DisplayRequest extends HttpServlet {
 			String result="";
 		    for(User user:list)
 		    {
-		    	result=user.getUname()+" has send you a friend request!!!" +"<br>"+"<button type='button' onmouseover='changeColour(this)' onmouseout='changeColour(this)' class='accept' value="+user.getUname()+" onclick='acceptRequest(this)'>"+"Accept"+"</button>          "+"<button type='button' onmouseover='changeColour(this)' class='accept' value="+user.getUname()+" onclick='rejectRequest(this)'>"+"Reject"+"</button>"+"<br><br>"+result;	
+		    	result="<i class='fas fa-angle-double-right' style='font-size:20px;color:darkblue'></i>"+"&nbsp;"+user.getUname()+" has send you a friend request!!!" +"<br>"+"<button type='button' class='accept' onmouseover='changeColour(this)' onmouseout='changeColour(this)'  value="+user.getUname()+" onclick='acceptRequest(this)'>"+"&nbsp;"+"&nbsp;"+"&nbsp;"+"&nbsp;"+"&nbsp;"+"Accept"+"&nbsp;"+"&nbsp;"+"</button>          "+"<button type='button' onmouseover='changeColour(this)' onmouseout='changeColour(this)' class='accept' value="+user.getUname()+" onclick='rejectRequest(this)'>"+"Reject"+"</button>"+"<br><br>"+result;	
 		    	
 		    }
-		    if(list.isEmpty())
+		    ArrayList<String> notifications=obj.getNotification(uname);
+		    for(String str:notifications)
+		    {
+		    	result="<i class='fas fa-angle-double-right' style='font-size:20px;color:darkblue'></i>"+"&nbsp;"+str+"<br><br>"+result;
+		    }
+		    
+	        if(list.isEmpty() && notifications.isEmpty())
 		    {
 		    	result="You have no new notifications!!";
 		    }

@@ -63,7 +63,7 @@ font-size: 20px;
 padding: 0;
 border: none;
 background: none;
-color: red;
+color: green;
 font-size: 20px;
 }
 th
@@ -172,7 +172,7 @@ function sendRequest(object)
 			else if(state=="Requested")
 			{
 				urls="WithdrawRequest?&toId="+toId;
-				object.style.color="red";
+				object.style.color="green";
 				
 			}
 	   		if (window.XMLHttpRequest)
@@ -231,9 +231,10 @@ function findByUname(object)
 
 <body   background="5.jpg">
 <div class="topnav">
-  <a  href="welcome.jsp">Home</a>
+  <a  href="DisplayTimeline">Home</a>
   <a class="active" href="SearchUser">Search</a>
   <a href="DisplayFriends">Chat</a>
+  <a href="Timeline.jsp">Timeline</a>
   <a href="Logout">Logout</a>
 </div>
 
