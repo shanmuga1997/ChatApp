@@ -435,7 +435,7 @@ function removeNotification(id)
 <div id="timeline" class="timeline">
 <span style='color:red;font-size:20px'>${noposts }</span>
 <c:forEach var="list" items="${list}">
-		   <h4 class="name"><i class='far fa-hand-point-right' style='font-size:20px;color:darkblue'></i>  ${list.fname }</h4>
+		   <h4 class="name"><i class='far fa-hand-point-right' style='font-size:20px;color:darkblue'></i>  ${list.fname }  </h4>
 		   <div class="modal" >
 		   <span class="content">${list.content}</span><br><br>
 		   </div>

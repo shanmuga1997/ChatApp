@@ -3,4 +3,21 @@ create table UserCredentials(uname varchar(20),password varchar(20),constraint U
 create table Friendlist(fromId varchar(20),toId varchar(20),status varchar(20),constraint Friendlist_fromidtoid_pk primary key(fromId,toId),constraint Friendlist_fromId_fk foreign key(fromId) references UserInfo(uname),constraint Friendlist_toId_fk foreign key(toId) references UserInfo(uname));
 create table Inbox(fromid varchar(20),toid varchar(20),message varchar(2000),lastseen varchar(35));
 create table status(uname varchar(20),lastseen varchar(20),constraint status_uname_pk primary key(uname),constraint status_uname_fk foreign key(uname) references UserInfo(uname));
+create table timeline(id number,uname varchar(20),content varchar(100),likes number,constraint timeline_id_pk primary key(id),constraint timeline_uname_fk foreign key(uname) references UserInfo(uname));
+create table likes(id number,uname varchar(20),constraint likes_id_uname_pk primary key(id,uname),constraint likes_uname_fk foreign key(uname) references UserInfo(uname),constraint likes_id_fk foreign key(id) references Timeline(id));
+create table notification(id number,fromid varchar(20),toid varchar(20),alerts varchar(100),constraint notification_id_pk primary key(id),constraint notification_fromid_fk foreign key(fromid) references UserInfo(uname),constraint notification_toid_fk foreign key(toid) references UserInfo(uname));
 
+
+create sequence timeline_id_seq start with 1 INCREMENT by 1;
+create sequence notification_id_seq start with 1 INCREMENT by 1;
+
+
+
+select * from UserInfo;
+select * from UserCredentials;
+select * from Inbox;
+select * from FriendList;
+select * from status;
+select * from timeline;
+select * from likes;
+select * from notification;
